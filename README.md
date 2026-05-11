@@ -12,21 +12,21 @@ The aim of this project is to distinguish between truthful (label 0) and halluci
 ### 1. Installation
 Clone the repository and install the necessary dependencies:
 ```bash
-!git clone https://github.com/ralifgrannik/SMILES-HALLUCINATION-DETECTION.git
-%cd SMILES-HALLUCINATION-DETECTION
-!pip install -r requirements.txt
+git clone https://github.com/ralifgrannik/SMILES-HALLUCINATION-DETECTION.git
+cd SMILES-HALLUCINATION-DETECTION
+pip install -r requirements.txt
 ```
 
 If the data folder has not been downloaded:
 ```bash
-%cd SMILES-HALLUCINATION-DETECTION
+cd SMILES-HALLUCINATION-DETECTION
 
 # Create the data folder
-!mkdir -p data
+mkdir -p data
 
 # Download the data 
-!wget -O data/dataset.csv https://github.com/ahdr3w/SMILES-2026-Hallucination-Detection/raw/main/data/dataset.csv
-!wget -O data/test.csv https://github.com/ahdr3w/SMILES-2026-Hallucination-Detection/raw/main/data/test.csv
+wget -O data/dataset.csv https://github.com/ahdr3w/SMILES-2026-Hallucination-Detection/raw/main/data/dataset.csv
+wget -O data/test.csv https://github.com/ahdr3w/SMILES-2026-Hallucination-Detection/raw/main/data/test.csv
 ```
 
 ### 2. Running the Solution
@@ -34,5 +34,5 @@ If the data folder has not been downloaded:
 To reproduce the extraction process, train the probe, and generate the `predictions.csv` file, execute:
 
 ```bash
-!python solution.py
+python solution.py
 ```
