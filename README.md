@@ -12,14 +12,14 @@ The aim of this project is to distinguish between truthful (label 0) and halluci
 ### 1. Installation
 Clone the repository and install the necessary dependencies:
 ```bash
-!git clone [https://github.com/YOUR_USERNAME/SMILES-HALLUCINATION-DETECTION.git](https://github.com/YOUR_USERNAME/SMILES-HALLUCINATION-DETECTION.git)
-!cd SMILES-HALLUCINATION-DETECTION
+!git clone https://github.com/ralifgrannik/SMILES-HALLUCINATION-DETECTION.git
+%cd SMILES-HALLUCINATION-DETECTION
 !pip install -r requirements.txt
 ```
 
 If the data folder has not been downloaded:
 ```bash
-!cd /content/SMILES-HALLUCINATION-DETECTION
+%cd SMILES-HALLUCINATION-DETECTION
 
 # Create the data folder
 !mkdir -p data
