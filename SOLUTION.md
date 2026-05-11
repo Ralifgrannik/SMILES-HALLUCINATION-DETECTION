@@ -1,5 +1,5 @@
 
-# Solution Report — SMILES-2026 Hallucination Detection
+# Solution Report - SMILES-2026 Hallucination Detection
 
 ## Reproducibility
 This repository contains a self-contained pipeline for detecting hallucinations in the Qwen2.5-0.5B model. 
@@ -25,7 +25,7 @@ python solution.py
 ### Technical Requirements:
 
 * Python 3.9+
-* CUDA-compatible GPU (recommended)
+* CUDA-compatible GPU
 * Execution time: Approximately 185 seconds for full feature extraction on 689 samples.
 
 ---
