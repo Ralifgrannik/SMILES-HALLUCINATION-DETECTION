@@ -1,3 +1,5 @@
+link to predictions.csv: https://drive.google.com/drive/folders/17zFKtMo73gRwW93uVp_Wa4XwslijE_tG?usp=sharing
+
 # SMILES-2026 Hallucination Detection
 
 This repository contains a binary classifier (probe) designed to detect hallucinations in the Qwen2.5-0.5B language model using its internal latent states.
