@@ -36,7 +36,6 @@ python solution.py
 
 * Python 3.9+
 * CUDA-compatible GPU
-* Execution time: Approximately 185 seconds for full feature extraction on 689 samples.
 
 
 
