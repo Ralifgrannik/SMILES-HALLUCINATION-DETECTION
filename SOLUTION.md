@@ -1,5 +1,6 @@
-
 # Solution Report - SMILES-2026 Hallucination Detection
+
+link to predictions.csv: https://drive.google.com/drive/folders/17zFKtMo73gRwW93uVp_Wa4XwslijE_tG?usp=sharing
 
 ### 1. Installation
 Clone the repository and install the necessary dependencies:
