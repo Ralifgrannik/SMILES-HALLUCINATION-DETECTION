@@ -1,24 +1,34 @@
 
 # Solution Report - SMILES-2026 Hallucination Detection
 
-## Reproducibility
-This repository contains a self-contained pipeline for detecting hallucinations in the Qwen2.5-0.5B model. 
-The solution is optimized for execution in a CUDA-enabled environment (e.g., Google Colab T4 GPU).
+### 1. Installation
+Clone the repository and install the necessary dependencies:
+```bash
+git clone https://github.com/ralifgrannik/SMILES-HALLUCINATION-DETECTION.git
+cd SMILES-HALLUCINATION-DETECTION
+pip install -r requirements.txt
+```
 
-### Execution Instructions:
-1. **Environment Setup**:
-   Install the required dependencies as specified in the `requirements.txt`:
-   ```bash
-   pip install -r requirements.txt
-   ```
+If the data folder has not been downloaded:
+```bash
+cd SMILES-HALLUCINATION-DETECTION
 
-2. **Data Integrity**:
-Ensure that `dataset.csv` and `test.csv` are present in the `./data/` directory.
-3. **Inference and Training**:
-Run the primary execution script to perform feature extraction, probe training, and prediction generation:
+# Create the data folder
+mkdir -p data
+
+# Download the data 
+wget -O data/dataset.csv https://github.com/ahdr3w/SMILES-2026-Hallucination-Detection/raw/main/data/dataset.csv
+wget -O data/test.csv https://github.com/ahdr3w/SMILES-2026-Hallucination-Detection/raw/main/data/test.csv
+```
+
+### 2. Running the Solution
+
+To reproduce the extraction process, train the probe, and generate the `predictions.csv` file, execute:
+
 ```bash
 python solution.py
 ```
+
 
 
 
@@ -28,48 +38,26 @@ python solution.py
 * CUDA-compatible GPU
 * Execution time: Approximately 185 seconds for full feature extraction on 689 samples.
 
----
 
-## Final Solution Description
+
+## Solution Description
 
 ### Methodology
 
-The proposed solution implements a **Linear Probing** architecture integrated with a robust feature selection mechanism. The approach addresses the high dimensionality of LLM hidden states relative to the limited sample size ($N=689$) through the following components:
+The proposed solution implements a **Linear Probing** architecture integrated with a robust feature selection mechanism. This approach addresses the high dimensionality of LLM hidden states relative to the limited sample size ($N=689$) through the following technical components:
 
-1. **Strategic Layer Selection (`aggregation.py`)**:
-* Layers **[14, 16, 18, 22]** were identified as optimal. This configuration captures the transition from semantic conceptualization (mid-layers) to final logical convergence (late layers), avoiding the noise present in the terminal embedding transformation.
-* **Multi-modal Pooling**: Both Mean and Max pooling were applied to each layer. Max pooling, in particular, proved essential for identifying "activation spikes" — a known heuristic for model uncertainty and potential hallucination.
+1.  **Strategic Layer Selection & Aggregation (`aggregation.py`)**:
+    * Layers **[14, 16, 18, 22]** were identified as optimal. This configuration captures the progression from semantic conceptualization (middle layers) to final logical convergence (late layers), while bypassing the noise inherent in terminal embedding transformations.
+    * **Multimodal Pooling**: Both Mean and Max pooling operations were applied to each selected layer. The integration of **Max pooling** proved essential for detecting "activation spikes"—a known physiological heuristic for model uncertainty and potential hallucination.
 
+2.  **Regularization and Classification (`probe.py`)**:
+    * To mitigate the risk of overfitting within a high-dimensional feature space ($D=8064$), a Logistic Regression model with an **L1 (Lasso) penalty** was utilized ($C=0.05$).
+    * This methodology facilitates intrinsic feature selection, effectively condensing the active feature set to approximately **65–102 salient neurons** that exhibit the strongest predictive correlation with factual accuracy.
 
-2. **L1-Regularized Linear Classifier (`probe.py`)**:
-* To mitigate overfitting in a high-dimensional feature space ($D=8064$), a **Logistic Regression model with L1 (Lasso) penalty** was utilized ($C=0.05$).
-* This approach performed intrinsic feature selection, reducing the active feature set to approximately **65–102 salient neurons**.
-
-
-3. **Statistical Robustness via K-Fold (`splitting.py`)**:
-* A **5-fold Stratified Cross-Validation** strategy was implemented. This ensured that the primary metric (AUROC) is invariant to specific data splits and provided a more generalized estimation of the probe's performance on the held-out test set.
-
-
+3.  **Statistical Robustness via K-Fold (`splitting.py`)**:
+    * A **5-fold Stratified Cross-Validation** strategy was implemented to ensure that the primary metric (AUROC) remains invariant to specific data partitions. This provides a generalized and reliable estimation of the probe's performance on the held-out competition test set.
 
 ### Key Performance Drivers
 
-* **Sparsity induction**: The transition from L2 to L1 regularization was the most significant factor in closing the gap between training and test AUROC.
-* **Dynamic Residuals**: Incorporating the "delta" (residual drift) between the final layers helped capture the model's "hesitation" during token generation.
-
----
-
-## Experiments and Failed Attempts
-
-1. **Principal Component Analysis (PCA)**:
-* *Result*: Discarded.
-* *Analysis*: While PCA reduced dimensionality, it projected features into a non-interpretable space that diluted the signal of individual "truth-telling" neurons. Lasso proved superior by preserving the physical meaning of neural activations.
-
-
-2. **Full Sequence Context**:
-* *Result*: Sub-optimal.
-* *Analysis*: Including the prompt embeddings introduced significant noise. The signal for hallucination is most concentrated in the final **20-25 tokens** of the response, where the model's autoregressive state accumulation is most pronounced.
-
-
-3. **Global Average Pooling (GAP)**:
-* *Result*: Replaced with Mean+Max pooling.
-* *Analysis*: GAP alone was insufficient to capture the extreme activation values that characterize "confused" states in small-scale models like Qwen2.5-0.5B.
+* **Sparsity Induction**: The transition from L2 to L1 regularization was the most significant factor in reducing the generalization gap between training and validation AUROC.
+* **Dynamic Residuals (Residual Drift)**: Incorporating the "delta" (the activation variance between subsequent layers) enabled the probe to capture the model's "stochastic hesitation" during the autoregressive generation process.
